@@ -1,0 +1,13 @@
+# Render.com one-click deploy: one Web Service serves app + API
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: payment-tracking
+    runtime: node
+    rootDir: .
+    buildCommand: npm run install:all && npm run build
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+    # Free tier: app spins down after 15 min; first load may take ~30s. Data/uploads are ephemeral (reset on deploy/restart). For persistent data, add a Render Disk (paid) or use a DB.
