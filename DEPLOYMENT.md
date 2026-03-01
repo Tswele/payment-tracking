@@ -40,7 +40,7 @@ Replace `YOUR_USERNAME` and `payment-tracking` with your GitHub username and rep
 5. Click **Create Web Service**. Render will install dependencies, build the frontend, and start the server.
 6. When the deploy finishes, you’ll see a URL like:
    - **https://payment-tracking-xxxx.onrender.com**
-7. Open that URL in your browser. You should see the “Monthly Update” page. Share this link with everyone in the list — they can upload proof of payment and the grid updates automatically.
+7. Open that URL in your browser. You should see the “Mashayinduna Monthly Update” page. Share this link with everyone in the list — they can upload proof of payment and the grid updates automatically.
 
 ### 3. (Optional) Use the blueprint file instead
 

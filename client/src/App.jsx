@@ -23,6 +23,21 @@ function monthLabel(key) {
   return date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' });
 }
 
+// Payment closes on the 5th of each month. Returns: 'paid' | 'warning' | 'overdue' | 'future'
+function getCellStatus(monthKey, hasPayment) {
+  if (hasPayment) return 'paid';
+  const [y, m] = monthKey.split('-').map(Number);
+  const firstDay = new Date(y, m - 1, 1);
+  const deadline = new Date(y, m - 1, 5); // 5th of the month
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  firstDay.setHours(0, 0, 0, 0);
+  deadline.setHours(23, 59, 59, 999);
+  if (today < firstDay) return 'future';           // Month not started yet
+  if (today <= deadline) return 'warning';          // In window 1st–5th: amber
+  return 'overdue';                                 // Past 5th: red
+}
+
 export default function App() {
   const [members, setMembers] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -125,8 +140,8 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Monthly Update</h1>
-        <p className="tagline">Upload proof of payment for a member and month — the grid updates automatically</p>
+        <h1>Mashayinduna Monthly Update</h1>
+        <p className="tagline">Upload proof of payment for a member and month — the grid updates automatically. Payments close on the 5th of each month.</p>
       </header>
 
       <main className="main">
@@ -177,6 +192,11 @@ export default function App() {
 
         <section className="grid-section card">
           <h2>Payment grid</h2>
+          <p className="grid-legend">
+            <span className="legend-dot paid" /> Green = paid on time &nbsp;
+            <span className="legend-dot warning" /> Amber = within 5 days of deadline (1st–5th) &nbsp;
+            <span className="legend-dot overdue" /> Red = missed deadline (after 5th)
+          </p>
           {error && <div className="banner error">{error}</div>}
           {loading && <p className="muted">Loading…</p>}
           {!loading && (
@@ -197,13 +217,9 @@ export default function App() {
                       {monthKeys.map((monthKey) => {
                         const cell = cellMap[`${member.name}|${monthKey}`];
                         const amount = cell ? cell.amount : 0;
-                        const isPast = monthKey < currentMonthKey;
-                        const isCurrent = monthKey === currentMonthKey;
-                        const isEmpty = !cell || amount === 0;
-                        let cellClass = 'cell-amount';
-                        if (isEmpty && isPast) cellClass += ' cell-missing';
-                        else if (isEmpty && isCurrent) cellClass += ' cell-pending';
-                        else if (amount > 0) cellClass += ' cell-paid';
+                        const hasPayment = cell && amount > 0;
+                        const status = getCellStatus(monthKey, hasPayment);
+                        let cellClass = 'cell-amount cell-' + status;
                         return (
                           <td key={monthKey} className={cellClass}>
                             {cell && cell.proofFilename ? (

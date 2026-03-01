@@ -1,4 +1,4 @@
-# Payment Tracking (Monthly Update)
+# Mashayinduna Monthly Update
 
 Replaces your **manual Excel "MONTHLY UPDATE"** sheet. Your team uploads proof of payment by **Name** and **Month**; the app keeps a spreadsheet-style grid with **Total Received**, **Outstanding**, and **Expected** — no more manual cell updates.
 
